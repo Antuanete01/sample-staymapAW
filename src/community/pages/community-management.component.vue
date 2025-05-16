@@ -127,62 +127,91 @@ export default {
   },
 
 
-  created() {
-    this.communityService = new CommunityService();
-    this.communityService.getAll().then(response => {
-      console.log('API response:', response.data);
-      this.communities = response.data.map(c => new Community(c));
-    }).catch(error => console.error(' Error al cargar comunidades ', error));
-  }
+ created() {
+  this.communityService = new CommunityService();
+  this.communityService.getAll()
+    .then(communities => {
+      console.log('API response:', communities);
+      this.communities = communities;
+    })
+    .catch(error => console.error('Error al cargar comunidades', error));
+}
 }
 </script>
 
 <template>
   <div class="w-full">
-    <!-- DIALOGO PARA CREAR NUEVA COMUNIDAD-->
+    <!--
+    DIALOGO PARA CREAR NUEVA COMUNIDAD
+    -->
     <div class="flex justify-content-between align-items-center mb-4" style="margin-left: 1.5rem;">
       <h2 class="text-2xl">Comunidades</h2>
-      <pv-button  label="Nueva comunidad" icon="pi pi-plus" severity="success" @click="onNewItem" style="background-color: #CB6CE6; border-radius: 25px; border: none; color: white; font-weight: bold;"/>
+      <pv-button label="Nueva comunidad" icon="pi pi-plus" severity="success" @click="onNewItem"/>
     </div>
 
-    <div class="communities-group-container flex gap-5">
-      <!-- Sidebar -->
-      <div class="groups-container">
-        <div class="groups-header">
-          <span>Grupos</span>
-        </div>
-        <div class="groups-options">
-          <a>Descubrir</a>
-          <a>Tus Grupos</a>
-        </div>
-      </div>
-
-      <!-- Cards grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-
-      <div v-for="community in communities" :key="community.id" class="community-card">
-          <img :src="community.image" :alt="community.name" />
-          <div class="info">
+    <!-- Cards Grid pero con botones para modificar y eliminar -->
+   <!-- <div class="grid">
+      <div v-for="community in communities" :key="community.id" class="col-12 md:col-4">
+        <pv-card class="h-full">
+          <template #header>
+            <img :src="community.image" alt="Community Image" class="w-full h-12rem object-cover border-round-top"/>
+          </template>
+          <template #title>
             <h3>{{ community.name }}</h3>
-            <p>{{ community.memberQuantity }} miembros</p>
-          </div>
-          <button class="join-button">Unirte al grupo</button>
-        </div>
+          </template>
+          <template #content>
+            <p><strong>Members:</strong> {{ community.memberQuantity }}</p>
+          </template>
+          <template #footer>
+            <div class="flex justify-content-end gap-2">
+              <pv-button icon="pi pi-pencil" severity="info" outlined @click="onEditItem(community)" />
+              <pv-button icon="pi pi-trash" severity="danger" outlined @click="onDeleteItem(community)" />
+            </div>
+          </template>
+        </pv-card>
       </div>
+    </div> -->
+    <!-- Cards Grid con el boton de unirse al grupo-->
 
-      <!-- Diálogo Crear / Editar -->
-      <community-item-create-and-edit-component
-          :edit="isEdit"
-          :item="community"
-          :visible="createAndEditDialogIsVisible"
-          @cancel-requested="onCancelRequested"
-          @save-requested="onSaveRequested($event)"
-      />
-    </div>
+
+    <div class="communities-group-container">
+
+          <div class="groups-container">
+            <div class="groups-header">
+              <span>Grupos</span>
+            </div>
+            <div class="groups-options">
+               <a>Descubrir</a>
+              <a>Tus Grupos</a>
+            </div>
+          </div>
+
+
+
+        <div class="grid">
+          <div v-for="community in communities" :key="community.id" class="col-12 md:col-6 lg:col-3">
+            <div class="community-card">
+              <img :src="community.image" :alt="community.name" />
+              <div class="info">
+                <h3>{{ community.name }}</h3>
+                <p>{{ community.memberQuantity }} miembros</p>
+              </div>
+              <button class="join-button">Unirte al grupo</button>
+            </div>
+          </div>
+        </div>
+        <!-- Diálogo para Crear / Editar -->
+        <community-item-create-and-edit-component
+            :edit="isEdit"
+            :item="community"
+            :visible="createAndEditDialogIsVisible"
+            @cancel-requested="onCancelRequested"
+            @save-requested="onSaveRequested($event)"
+        />
+      </div>
     </div>
 </template>
 
 <style >
 
 </style>
-
