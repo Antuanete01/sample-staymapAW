@@ -1,0 +1,12 @@
+{
+  "option": {
+    "communities": "Communities",
+    "concerts": "Concerts",
+    "map": "Map"
+  },
+  "authoring-phrase": {
+    "intro": "Made with",
+    "use": "using",
+    "author": "by {brand} Developer Team"
+  }
+}
